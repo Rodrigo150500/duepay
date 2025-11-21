@@ -12,9 +12,10 @@ class DuepayUseCase(DuepayUseCaseInterface):
 
     sales_xml = http_request.body["xml"]
     duepay_csv = http_request.body["csv"]
-
+    
     dataframe_sales = SalesService().generate_sales_df_cpf_total_chave(sales_xml)
     dataframe_duepay = DuepayService().generate_duepay_df_total(duepay_csv) 
+    
 
     report = self.__merge_dataframe_sales_and_duepay(dataframe_sales, dataframe_duepay)
 
