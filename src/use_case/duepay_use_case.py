@@ -1,8 +1,8 @@
 from io import BytesIO
 from pandas import DataFrame
 from .interface.duepay_use_case_interface import DuepayUseCaseInterface
-from src.services.duepay.duepay_service import DuepayService
-from src.services.duepay.sales_service import SalesService
+from src.services.duepay_service import DuepayService
+from src.services.sales_service import SalesService
 from src.main.http_types.http_request.http_request import HttpRequest
 from src.main.http_types.http_response.http_response import HttpResponse
 

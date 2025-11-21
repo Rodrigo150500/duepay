@@ -1,7 +1,7 @@
 from flask import Blueprint, request, send_file, jsonify, render_template
 from src.main.http_types.http_request.http_request import HttpRequest
-from src.use_case.duepay.duepay_use_case import DuepayUseCase
-from src.use_case.duepay.search_xml_use_case import SearchForXML
+from src.use_case.duepay_use_case import DuepayUseCase
+from src.use_case.search_xml_use_case import SearchForXML
 
 duepay_bp = Blueprint("duepay_bp_route", __name__)
 

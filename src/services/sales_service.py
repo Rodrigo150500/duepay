@@ -1,7 +1,7 @@
 from io import BytesIO, StringIO
 from xml.etree import ElementTree as ET
 from pandas import DataFrame
-from src.utils.duepay.unzip_file import unzip_file
+from src.utils.unzip_file import unzip_file
 from .interface.sales_service_interface import SalesServiceInterface
 
 class SalesService(SalesServiceInterface):
