@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duepay</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='duepay/style.css')}}">
+      <link rel="shortcut icon" href="{{url_for('static', filename='duepay/assets/duepay_logo.png')}}" type="image/x-icon">
+
+</head>
+<body>
+    <header>
+        <h1>DUEPAY</h1>
+    </header>
+    <main>
+        <section class="container-report">
+            <form action="/duepay" method="POST" enctype="multipart/form-data">
+
+                <div class="container-title">
+                    <h1>RELATÓRIO DUEPAY</h1>
+                </div>
+                <div class="container-input-file">
+                    <div class="container-sales">
+                        <label for="sales">Vendas</label>
+                        <input type="file" name="sales" id="sales" accept=".zip" required>
+                    </div>
+                    <div class="container-duepay">
+                        <label for="duepay">Duepay</label>
+                        <input type="file" name="duepay" id="duepay" accept=".xls" required>
+                    </div>
+                </div>
+                <div class="container-button">
+                    <button>Gerar relatório</button>
+                </div>
+            </form>
+        </section>
+        <section class="container-search">
+            <form id="search_form" method="POST" enctype="multipart/form-data">
+
+                <div class="container-title">
+                    <h1>PESQUISA POR CPF OU TOTAL</h1>
+                </div>
+
+                <div class="container-input-textarea">
+
+                    <div class="container-input">
+
+                        <div class="container-input-file-xml">
+                            <label for="xml">Vendas</label>
+                            <input type="file" name="xml" id="xml" accept=".zip" required>
+                        </div>
+
+                        <div class="container-input-cpf">
+                            <label for="cpf">CPF OU TOTAL</label>
+                            <input type="text" name="cpf_or_total" placeholder="xxx.xxx.xxx-xx ou xx.xx" id="cpf" required>
+                        </div>
+                        <div class="container-button">
+                            <button id="btn-search-xml" type="submit">Pesquisar</button>
+                        </div>
+                    </div>
+                
+                    <div class="container-textarea">
+                        <textarea name="" id="resultado"></textarea>
+                    </div>
+                </div>
+            </form>
+                
+        </section>
+    </main>
+
+    <script type="module" src="{{url_for('static', filename='duepay/src/pages/search_xml/search_handler.js')}}"></script>
+
+</body>
+</html>
