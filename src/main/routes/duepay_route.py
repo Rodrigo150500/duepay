@@ -2,6 +2,7 @@ from flask import Blueprint, request, send_file, jsonify, render_template
 from src.main.http_types.http_request.http_request import HttpRequest
 from src.use_case.duepay_use_case import DuepayUseCase
 from src.use_case.search_xml_use_case import SearchForXML
+from src.errors.error_handler import error_handler
 
 duepay_bp = Blueprint("duepay_bp_route", __name__)
 
@@ -11,6 +12,7 @@ def send_duepay_report():
 
     xml_file = request.files["sales"]
     csv_file = request.files["duepay"]
+
 
     http_request = HttpRequest(
       body={
@@ -23,7 +25,6 @@ def send_duepay_report():
 
     response = use_case.generate_report(http_request)
 
-
     return send_file(
         response.body,
         as_attachment=True,
@@ -33,9 +34,13 @@ def send_duepay_report():
       
   except Exception as exception:
 
-    print(exception)
-    return jsonify({"error": str(exception)}), 500  # Retorna erro HTTP
+    print(f"Error: {str(exception)}")
+
+    response = error_handler(exception)
+
+    return jsonify(response.body), response.status_code
   
+
 @duepay_bp.route("/duepay_page", methods=["GET", "POST"])
 def show_duepay_forms():
   return render_template("duepay/index.html")
@@ -61,5 +66,9 @@ def search_duepay_xml():
         return jsonify(response.body), response.status_code
 
     except Exception as exception:
-        print(exception)
-        return jsonify({"error": str(exception)}), 500
+        
+        print(f"Error: {str(exception)}")
+
+        response = error_handler(exception)
+
+        return jsonify(response.body), response.status_code

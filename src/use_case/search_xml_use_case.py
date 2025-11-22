@@ -4,6 +4,10 @@ from src.main.http_types.http_response.http_response import HttpResponse
 from src.utils.unzip_file import unzip_file
 from xml.etree import ElementTree as ET
 from .interface.search_xml_use_case_inteface import SearchForXMLInterface
+from src.validations.mime_type_validation.mime_type_validation import mime_type_validation
+from src.errors.types.http_bad_request import HttpBadRequest
+from src.errors.types.http_unprocessable_entity import HttpUnprocessableEntity
+
 
 class SearchForXML(SearchForXMLInterface):
 
@@ -12,20 +16,32 @@ class SearchForXML(SearchForXMLInterface):
 
     def search(self, http_request: HttpRequest) -> HttpResponse:
 
-        xml_zipped = http_request.body["xml"]
+        try:
 
-        value_cpf_or_total = http_request.body["value"]
+            xml_zipped = http_request.body["xml"]
 
-        cpf_or_total = self.__verify_if_value_is_cpf_or_total(value_cpf_or_total)
+            if mime_type_validation(xml_zipped) == False: raise HttpBadRequest("Erro: verifique os arquivos enviados")
 
-        xml_list = unzip_file(xml_zipped)
+            value_cpf_or_total = http_request.body["value"]
 
-        data = self.__search_manager(xml_list, cpf_or_total)
+            if not value_cpf_or_total: raise HttpBadRequest("Erro: Verifique os valores de Total/CPF")
+
+            cpf_or_total = self.__verify_if_value_is_cpf_or_total(value_cpf_or_total)
+
+            xml_list = unzip_file(xml_zipped)
+
+            data = self.__search_manager(xml_list, cpf_or_total)
+            
+            response = self.__formatted_response(data, self.__found)
+            
+            return response
+
+        except Exception as exception:
+
+            print(f"Error: {str(exception)}")
+
+            raise HttpUnprocessableEntity("Erro interno ao processar os arquivos. Verifique os XMLs enviados.")
         
-        response = self.__formatted_response(data, self.__found)
-        
-        return response
-
     
     def __search_manager(self, xml_list: list, value) -> list:
         
@@ -104,10 +120,12 @@ class SearchForXML(SearchForXMLInterface):
 
         return nfe
     
+    
     def __format_cpf(self, cpf_value: str) -> str:
         #xxx.xxx.xxx-xx
         cpf = f"{cpf_value[0:3]}.{cpf_value[3:6]}.{cpf_value[6:9]}-{cpf_value[9:11]}"
         return cpf
+    
 
     def __format_date(self, date: str) -> str:
 
@@ -120,8 +138,8 @@ class SearchForXML(SearchForXMLInterface):
 
         date_formated = f'{dia}/{mes}/{ano}'
 
-
         return date_formated
+    
     
     def __formatted_response(self, data: list, isFound: bool) -> HttpResponse:
         return HttpResponse(
@@ -131,6 +149,7 @@ class SearchForXML(SearchForXMLInterface):
             },
             status_code=200
         )
+    
     
     def __verify_if_value_is_cpf_or_total(self, value: str) -> bool:
         # Verifica se o valor é um CPF ou um total

@@ -1,3 +1,4 @@
+from src.errors.types.http_bad_request import HttpBadRequest
 from werkzeug.datastructures import FileStorage
 import zipfile
 
@@ -15,4 +16,6 @@ def unzip_file(file_to_unzip: FileStorage) -> list:
 
   except Exception as exception:
 
-    print(exception)
+    print(f"Error: {str(exception)}")
+
+    raise HttpBadRequest("Erro: Envie um arquivo .zip com os XMLs")
