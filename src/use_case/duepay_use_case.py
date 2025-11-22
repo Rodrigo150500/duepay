@@ -9,7 +9,7 @@ from src.services.sales_service import SalesService
 from src.main.http_types.http_request.http_request import HttpRequest
 from src.main.http_types.http_response.http_response import HttpResponse
 
-from src.validations.mime_type_validation import mime_type_validation
+from src.validations.mime_type_validation.mime_type_validation import mime_type_validation
 from src.errors.types.http_bad_request import HttpBadRequest
 from src.errors.types.http_unprocessable_entity import HttpUnprocessableEntity
 
@@ -22,8 +22,11 @@ class DuepayUseCase(DuepayUseCaseInterface):
       sales_xml = http_request.body["xml"]
       duepay_csv = http_request.body["csv"]
 
-      if mime_type_validation(sales_xml) == False or mime_type_validation(duepay_csv) == False: raise HttpBadRequest("Erro: verifique os arquivos enviados")
+      sales_xml_name = sales_xml.filename
+      duepay_csv_name = duepay_csv.filename
 
+      if mime_type_validation(sales_xml_name) == False or mime_type_validation(duepay_csv_name) == False: raise HttpBadRequest("Erro: verifique os arquivos enviados")
+      
       dataframe_sales = SalesService().generate_sales_df_cpf_total_chave(sales_xml)
       dataframe_duepay = DuepayService().generate_duepay_df_total(duepay_csv) 
       
@@ -37,7 +40,7 @@ class DuepayUseCase(DuepayUseCaseInterface):
     
     except Exception as exception:
 
-      print(f"Error:{str(exception)}")
+      print(f"Error: DuepayUseCase {str(exception)}")
 
       raise HttpUnprocessableEntity("Error: Verifique os arquivos enviados")
     

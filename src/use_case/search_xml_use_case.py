@@ -20,7 +20,9 @@ class SearchForXML(SearchForXMLInterface):
 
             xml_zipped = http_request.body["xml"]
 
-            if mime_type_validation(xml_zipped) == False: raise HttpBadRequest("Erro: verifique os arquivos enviados")
+            xml_zipped_name = xml_zipped.filename
+
+            if mime_type_validation(xml_zipped_name) == False: raise HttpBadRequest("Erro: verifique os arquivos enviados")
 
             value_cpf_or_total = http_request.body["value"]
 
